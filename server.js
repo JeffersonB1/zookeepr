@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const PORT = process.env.PORT || 3001;
 const app = express();
+app.use(express.static('public'));
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
@@ -94,9 +95,12 @@ app.get('/api/animals/:id', (req, res) => {
         res.send(404);
     } 
 });
+    app.get('/corey', (req, res) => {
+        res.send(`<h1>Im corey</h1>`);
+    })
 
-
-app. get('/api/animals', (req, res) => {          //why do we use the route '/api/animals/?             
+app.get('/api/animals', (req, res) => { 
+    console.log(req.query);         //why do we use the route '/api/animals/?             
     let results = animals;
     if (req.query) {
         results = filterByQuery(req.query, results);
@@ -118,8 +122,23 @@ app.post('/api/animals', (req, res)  => {
     // req.body is where our incoming content will be 
     console.log(req.body);
     res.json(animal);
-
     }  
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(3001, () => {
